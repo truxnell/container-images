@@ -125,6 +125,11 @@ jobs:
       if: ${{ steps.prep.outputs.goss == 'true' }}
       with:
         version: 'v0.3.16'
+    # Prepare to Convert repo to lowercase
+    - id: github-repo
+      uses: ASzc/change-string-case-action@v1
+      with:
+        string: ${{ github.repository }}
 
     # Creates a local build to run tests on
     - name: Build and Load local test-container
@@ -136,7 +141,7 @@ jobs:
         file: ./${{ steps.prep.outputs.category }}/${{ matrix.container }}/Dockerfile
         load: true
         tags: |
-          ghcr.io/${{ github.repository_owner }}/${{ matrix.container }}:test
+          ghcr.io/${{ steps.github-repo.outputs.lowercase }}/${{ matrix.container }}:test
         cache-from: ${{ steps.prep.outputs.cache_from }}
         cache-to: ${{ steps.prep.outputs.cache_to }}
 
@@ -146,13 +151,9 @@ jobs:
       env:
         GOSS_FILE: ./${{ steps.prep.outputs.category }}/${{ matrix.container }}/goss.yaml
       run: |
-        dgoss run ghcr.io/${{ github.repository_owner }}/${{ matrix.container }}:test
+        dgoss run ghcr.io/${{ steps.github-repo.outputs.lowercase }}/${{ matrix.container }}:test
 
     # Push if not a PR, otherwise just test the build process for all requested platforms
-    - id: github-repo
-      uses: ASzc/change-string-case-action@v1
-      with:
-        string: ${{ github.repository }}
     - name: Build and Push
       uses: docker/build-push-action@v2
       with:
