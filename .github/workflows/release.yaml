@@ -65,7 +65,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
+    - name: downcase REPO
+      run: |
+        echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
     # Define if tests and push should be run against which versions/platforms
     - name: Prepare
       id: prep
@@ -156,7 +158,7 @@ jobs:
         file: ./${{ steps.prep.outputs.category }}/${{ matrix.container }}/Dockerfile
         push: ${{ steps.prep.outputs.push }}
         tags: |
-          ghcr.io/${{ github.repository_owner }}/${{ matrix.container }}:latest
-          ghcr.io/${{ github.repository_owner }}/${{ matrix.container }}:v${{ steps.prep.outputs.version }}
+          ghcr.io/${$REPO}/${{ matrix.container }}:latest
+          ghcr.io/${$REPO}/${{ matrix.container }}:v${{ steps.prep.outputs.version }}
         cache-from: ${{ steps.prep.outputs.cache_from }}
         cache-to: ${{ steps.prep.outputs.cache_to }}
