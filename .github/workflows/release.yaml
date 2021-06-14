@@ -149,12 +149,12 @@ jobs:
         dgoss run ghcr.io/${{ github.repository_owner }}/${{ matrix.container }}:test
 
     # Push if not a PR, otherwise just test the build process for all requested platforms
-    - name: Build and Push
-      uses: docker/build-push-action@v2
     - id: github-repo
       uses: ASzc/change-string-case-action@v1
       with:
         string: ${{ github.repository }}
+    - name: Build and Push
+      uses: docker/build-push-action@v2
       with:
         build-args: VERSION=${{ steps.prep.outputs.version }}
         context: .
