@@ -1,6 +1,6 @@
 FROM docker.io/library/alpine:3.15.0
 
-COPY ./serials /serials
+COPY ./apps/raspberrypi4-uefi/serials /serials
 
 ADD https://github.com/pftf/RPi4/releases/download/v1.31/RPi4_UEFI_Firmware_v1.31.zip RPi4_UEFI_Firmware.zip
 
