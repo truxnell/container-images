@@ -1,0 +1,14 @@
+---
+process:
+  nginx:
+    running: true
+
+port:
+  tcp:80:
+    listening: true
+
+http:
+  http://localhost:80:
+    status: 200
+    body:
+      - "<title>theme.park - A collection of themes/skins for your favorite apps!</title>"
