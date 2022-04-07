@@ -5,13 +5,16 @@ ARG VERSION
 USER root
 
 RUN apk add --no-cache --virtual=build-dependencies python3 && \
-curl -fsSL "https://github.com/GilbN/theme.park/archive/${VERSION}.tar.gz" | tar xzf - -C /tmp/ --strip-components 1  && \
-python3 /tmp/themes.py && \
-grep -rl 'https://theme-park.dev' /tmp | xargs sed -i 's/https\:\/\/theme-park.dev//g' && \
-cp -r /tmp/css/ /usr/share/nginx/html/ && \
-cp -r /tmp/resources/ /usr/share/nginx/html/ && \
-cp /tmp/index.html /usr/share/nginx/html/ && \
-rm -r tmp
+  curl -fsSL "https://github.com/GilbN/theme.park/archive/${VERSION}.tar.gz" | tar xzf - -C /tmp/ --strip-components 1  && \
+  python3 /tmp/themes.py && \
+  grep -rl 'https://theme-park.dev' /tmp | xargs sed -i 's/https\:\/\/theme-park.dev//g' && \
+  cp -r /tmp/css/ /usr/share/nginx/html/ && \
+  cp -r /tmp/resources/ /usr/share/nginx/html/ && \
+  cp /tmp/index.html /usr/share/nginx/html/ && \
+  rm -r tmp && \
+  chown -R nginx:nginx /usr/share/nginx/html/
+  
+USER nginx
 
 LABEL \
   org.opencontainers.image.title="theme.park" \
