@@ -20,6 +20,8 @@ jobs:
   changes:
     name: Get changes
     runs-on: self-hosted
+    env:
+      working-directory: /runner
     outputs:
       matrix: '{"container": ${{ steps.reduce.outputs.containers }} }'
     steps:
@@ -55,6 +57,8 @@ jobs:
   build:
     name: Build
     runs-on: self-hosted
+    env:
+      working-directory: /runner
     needs:
       - hadolint
       - changes
