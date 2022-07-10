@@ -1,0 +1,10 @@
+---
+port:
+  tcp:9134:
+    listening: true
+
+http:
+  http://localhost:8080:
+    status: 200
+    body:
+      - "ZFS Exporter"
