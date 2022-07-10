@@ -1,8 +1,4 @@
 ---
-port:
-  tcp:9134:
-    listening: true
-
 http:
   http://localhost:9134:
     status: 200
