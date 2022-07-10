@@ -4,7 +4,7 @@ port:
     listening: true
 
 http:
-  http://localhost:8080:
+  http://localhost:9134:
     status: 200
     body:
       - "ZFS Exporter"
