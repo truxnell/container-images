@@ -19,7 +19,7 @@ env:
 jobs:
   changes:
     name: Get changes
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     outputs:
       matrix: '{"container": ${{ steps.reduce.outputs.containers }} }'
     steps:
@@ -40,7 +40,7 @@ jobs:
 
   hadolint:
     name: Run hadolint
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     needs:
       - hadolint
       - changes
