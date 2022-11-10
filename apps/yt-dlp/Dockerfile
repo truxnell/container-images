@@ -3,7 +3,7 @@ FROM alpine:3.16.2@sha256:bc41182d7ef5ffc53a40b044e725193bc10142a1243f395ee852a8
 # https://github.com/Yelp/dumb-init/releases
 ARG DUMB_INIT_VERSION=1.2.5
 
-ARG BUILD_VERSION
+ARG VERSION
 #ARG ARCHIVE_URL=https://github.com/yt-dlp/yt-dlp/archive/
 
 RUN set -x \
