@@ -1,5 +1,15 @@
-FROM tnk4on/yt-dlp:alpine-pip
-
-USER root
-RUN pip install mutagen
+# Containerfile for tnk4on/yt-dlp:alpine-pip
+FROM python:alpine
+LABEL maintainer="Shion Tanaka / Twitter(@tnk4on)"
+RUN apk add --update --no-cache --virtual .build-deps gcc musl-dev \
+  && pip install --upgrade pip \
+  && pip install pycrypto yt-dlp mutagen \
+  && rm -rf ~/.cache/pip \
+  && apk del .build-deps \
+  && apk add ffmpeg \
+  && chmod o+w /media \
+  && adduser -D yt-dlp \
+  COPY ./yt-dlp.conf /etc/yt-dlp.conf
+WORKDIR /media
 USER yt-dlp
+ENTRYPOINT ["yt-dlp"]
