@@ -100,7 +100,9 @@ jobs:
           fi
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        run: |
+          sudo apt update
+          sudo apt-get install -y qemu qemu-user-static
         with:
           platforms: amd64,arm64
 
