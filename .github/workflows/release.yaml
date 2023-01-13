@@ -6,11 +6,16 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - README.md
+    paths:
+      - 'apps/**'
+      - '.github/workflows/release.yaml'
+
   pull_request:
     branches:
       - main
+    paths:
+      - 'apps/**'
+      - '.github/workflows/release.yaml'
 
 env:
   # Regstiry where the image is stored
@@ -25,8 +30,8 @@ jobs:
         id: get-app-token
         uses: getsentry/action-github-app-token@v2
         with:
-          app_id: ${{ secrets.BJWS_APP_ID }}
-          private_key: ${{ secrets.BJWS_APP_PRIVATE_KEY }}
+          app_id: ${{ secrets.TRUXNELL_APP_ID }}
+          private_key: ${{ secrets.TRUXNELL_APP_PRIVATE_KEY }}
 
       - name: Checkout
         uses: actions/checkout@v3
