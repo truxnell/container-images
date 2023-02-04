@@ -99,7 +99,7 @@ jobs:
             BUILD_DATE="${{ steps.prep.outputs.build_date }}"
             VCS_REF="${{ steps.prep.outputs.vcs_ref }}"
           tags: |
-            ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner | lower }}/assets:latest
+            ${{ env.IMAGE_REGISTRY }}/truxnell/assets:latest
           cache-from: ${{ steps.prep.outputs.cache_from }}
           cache-to: ${{ steps.prep.outputs.cache_to }}
           push: ${{ steps.prep.outputs.push }}
