@@ -1,5 +1,5 @@
 ---
-name: "Action: Image Build"
+name: 'Action: Image Build'
 
 on:
   workflow_call:
@@ -19,21 +19,21 @@ on:
             ]
         required: false
         type: string
-        default: ""
+        default: ''
 
       pushImages:
         required: false
-        default: "false"
+        default: 'false'
         type: string
 
       updateMetadata:
         required: false
-        default: "false"
+        default: 'false'
         type: string
 
       sendNotification:
         required: false
-        default: "false"
+        default: 'false'
         type: string
 
 env:
@@ -46,7 +46,7 @@ jobs:
     if: inputs.imagesToBuild != '' && inputs.imagesToBuild != '[]'
     strategy:
       matrix:
-        image: ["${{ fromJson(inputs.imagesToBuild) }}"]
+        image: ['${{ fromJson(inputs.imagesToBuild) }}']
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -208,7 +208,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         if: ${{ always() && inputs.sendNotification == 'true' }}
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.CONTAINERS_WEBHOOK }}
           title: ${{ steps.build-failed.outputs.message || steps.build-success.outputs.message }}
           color: ${{ steps.build-failed.outputs.color }}
           username: GitHub Actions
