@@ -1,14 +1,14 @@
 ---
-name: "Image: Rebuild"
+name: 'Image: Rebuild'
 
 on:
   push:
     branches:
       - main
     paths:
-      - "apps/**"
-      - "!apps/**/metadata.json"
-      - "!apps/**/README.md"
+      - 'apps/**'
+      - '!apps/**/metadata.json'
+      - '!apps/**/README.md'
 
 jobs:
   get-changes:
@@ -27,7 +27,7 @@ jobs:
   generate-build-matrix:
     name: Generate matrix for building images
     runs-on: ubuntu-latest
-    needs: ["get-changes"]
+    needs: ['get-changes']
     outputs:
       matrix: ${{ steps.get-changed.outputs.changes }}
     if: ${{ needs.get-changes.outputs.addedOrModifiedImages }} != '[]'
@@ -62,7 +62,8 @@ jobs:
     needs:
       - generate-build-matrix
     with:
-      imagesToBuild: "${{ needs.generate-build-matrix.outputs.matrix }}"
-      pushImages: "true"
-      updateMetadata: "true"
+      imagesToBuild: '${{ needs.generate-build-matrix.outputs.matrix }}'
+      pushImages: 'true'
+      updateMetadata: 'true'
+      sendNotification: 'true'
     secrets: inherit
