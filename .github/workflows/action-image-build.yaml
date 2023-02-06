@@ -1,5 +1,5 @@
 ---
-name: 'Action: Image Build'
+name: "Action: Image Build"
 
 on:
   workflow_call:
@@ -19,21 +19,21 @@ on:
             ]
         required: false
         type: string
-        default: ''
+        default: ""
 
       pushImages:
         required: false
-        default: 'false'
+        default: "false"
         type: string
 
       updateMetadata:
         required: false
-        default: 'false'
+        default: "false"
         type: string
 
       sendNotification:
         required: false
-        default: 'false'
+        default: "false"
         type: string
 
 env:
@@ -46,7 +46,7 @@ jobs:
     if: inputs.imagesToBuild != '' && inputs.imagesToBuild != '[]'
     strategy:
       matrix:
-        image: ['${{ fromJson(inputs.imagesToBuild) }}']
+        image: ["${{ fromJson(inputs.imagesToBuild) }}"]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -175,18 +175,18 @@ jobs:
             ${{ steps.vars.outputs.chan_label_type }}.created="${{ steps.vars.outputs.chan_build_date }}"
             ${{ steps.vars.outputs.chan_label_type }}.title="${{ matrix.image.app }} (${{ matrix.image.channel }})"
             ${{ steps.vars.outputs.chan_label_type }}.version="${{ steps.vars.outputs.chan_upstream_version }}"
-            ${{ steps.vars.outputs.chan_label_type }}.authors="Devin Buhl <devin.kray@gmail.com>"
-            ${{ steps.vars.outputs.chan_label_type }}.url="https://github.com/onedr0p/containers/apps/${{ matrix.image.app }}"
-            ${{ steps.vars.outputs.chan_label_type }}.build.url="https://github.com/onedr0p/containers/actions/runs/${{ github.run_id }}"
-            ${{ steps.vars.outputs.chan_label_type }}.documentation="https://github.com/onedr0p/containers/apps/${{ matrix.image.app }}/README.md"
+            ${{ steps.vars.outputs.chan_label_type }}.authors="Nat Allan <containers@natallan.com>"
+            ${{ steps.vars.outputs.chan_label_type }}.url="https://github.com/Truxnell/containers-images/apps/${{ matrix.image.app }}"
+            ${{ steps.vars.outputs.chan_label_type }}.build.url="https://github.com/Truxnell/containers-images/actions/runs/${{ github.run_id }}"
+            ${{ steps.vars.outputs.chan_label_type }}.documentation="https://github.com/Truxnell/containers-images/apps/${{ matrix.image.app }}/README.md"
             ${{ steps.vars.outputs.chan_label_type }}.revision="${{ github.sha }}"
           context: .
           platforms: ${{ steps.vars.outputs.chan_platforms }}
           file: ${{ steps.vars.outputs.chan_dockerfile }}
           push: ${{ inputs.pushImages == 'true' }}
           tags: |-
-            ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner }}/${{ steps.vars.outputs.chan_tag_rolling }}
-            ${{ env.IMAGE_REGISTRY }}/${{ github.repository_owner }}/${{ steps.vars.outputs.chan_tag_version }}
+            ${{ env.IMAGE_REGISTRY }}/Truxnell/${{ steps.vars.outputs.chan_tag_rolling }}
+            ${{ env.IMAGE_REGISTRY }}/Truxnell/${{ steps.vars.outputs.chan_tag_version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -208,7 +208,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         if: ${{ always() && inputs.sendNotification == 'true' }}
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ secrets.CONTAINERS_WEBHOOK }}
           title: ${{ steps.build-failed.outputs.message || steps.build-success.outputs.message }}
           color: ${{ steps.build-failed.outputs.color }}
           username: GitHub Actions
