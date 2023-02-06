@@ -1,12 +1,12 @@
 ---
-name: "Scheduled Release"
+name: 'Scheduled Release'
 
 on:
   workflow_dispatch:
   schedule:
     # NOTE: The longest build for an app is ~1h30m
     # Keep this to run every 2 or more hours to prevent gremlins from spawning
-    - cron: "0 */3 * * *"
+    - cron: '0 */3 * * *'
 
 env:
   TOKEN: ${{ secrets.TOKEN }}
@@ -28,22 +28,22 @@ jobs:
         uses: tibdex/github-app-token@v1
         id: generate-token
         with:
-          app_id: "${{ secrets.BOT_APP_ID }}"
-          private_key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+          app_id: '${{ secrets.TRUXNELL_APP_ID }}'
+          private_key: '${{ secrets.TRUXNELL_APP_PRIVATE_KEY }}'
 
       - name: Fetch new app versions
         id: fetch
         run: ./.github/scripts/fetch.sh
         env:
-          TOKEN: "${{ steps.generate-token.outputs.token }}"
+          TOKEN: '${{ steps.generate-token.outputs.token }}'
 
   images-build:
     uses: truxnell/container-images/.github/workflows/action-image-build.yaml@main
     if: needs.generate-build-matrix.outputs.matrix != '[]'
-    needs: ["generate-build-matrix"]
+    needs: ['generate-build-matrix']
     with:
-      imagesToBuild: "${{ needs.generate-build-matrix.outputs.matrix }}"
-      pushImages: "true"
-      updateMetadata: "true"
-      sendNotification: "true"
+      imagesToBuild: '${{ needs.generate-build-matrix.outputs.matrix }}'
+      pushImages: 'true'
+      updateMetadata: 'true'
+      sendNotification: 'true'
     secrets: inherit
