@@ -53,7 +53,7 @@ jobs:
           fi
 
   images-build:
-    uses: Truxnell/containers-images/.github/workflows/action-image-build.yaml@main
+    uses: Truxnell/container-images/.github/workflows/action-image-build.yaml@main
     if: needs.generate-build-matrix.outputs.matrix != '[]'
     needs: ["generate-build-matrix"]
     with:

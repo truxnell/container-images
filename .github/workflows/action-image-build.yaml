@@ -176,9 +176,9 @@ jobs:
             ${{ steps.vars.outputs.chan_label_type }}.title="${{ matrix.image.app }} (${{ matrix.image.channel }})"
             ${{ steps.vars.outputs.chan_label_type }}.version="${{ steps.vars.outputs.chan_upstream_version }}"
             ${{ steps.vars.outputs.chan_label_type }}.authors="Nat Allan <containers@natallan.com>"
-            ${{ steps.vars.outputs.chan_label_type }}.url="https://github.com/Truxnell/containers-images/apps/${{ matrix.image.app }}"
-            ${{ steps.vars.outputs.chan_label_type }}.build.url="https://github.com/Truxnell/containers-images/actions/runs/${{ github.run_id }}"
-            ${{ steps.vars.outputs.chan_label_type }}.documentation="https://github.com/Truxnell/containers-images/apps/${{ matrix.image.app }}/README.md"
+            ${{ steps.vars.outputs.chan_label_type }}.url="https://github.com/Truxnell/container-images/apps/${{ matrix.image.app }}"
+            ${{ steps.vars.outputs.chan_label_type }}.build.url="https://github.com/Truxnell/container-images/actions/runs/${{ github.run_id }}"
+            ${{ steps.vars.outputs.chan_label_type }}.documentation="https://github.com/Truxnell/container-images/apps/${{ matrix.image.app }}/README.md"
             ${{ steps.vars.outputs.chan_label_type }}.revision="${{ github.sha }}"
           context: .
           platforms: ${{ steps.vars.outputs.chan_platforms }}
