@@ -9,7 +9,7 @@
   ],
   "platform": "github",
   "username": "trux-bot[bot]",
-  "repositories": ["Truxnell/containers"],
+  "repositories": ["Truxnell/container-images"],
   "onboarding": false,
   "requireConfig": "optional",
   "gitAuthor": "Trux-Bot <19149206+trux-bot[bot]@users.noreply.github.com>",
