@@ -1,24 +1,24 @@
 ---
-name: "Renovate"
+name: 'Renovate'
 
 on:
   workflow_dispatch:
     inputs:
       dryRun:
-        description: "Dry-Run"
-        default: "false"
+        description: 'Dry-Run'
+        default: 'false'
         required: false
       logLevel:
-        description: "Log-Level"
-        default: "debug"
+        description: 'Log-Level'
+        default: 'debug'
         required: false
   schedule:
-    - cron: "0 * * * *"
+    - cron: '0 * * * *'
   push:
-    branches: ["main"]
+    branches: ['main']
     paths:
-      - ".github/renovate.json5"
-      - ".github/renovate/**.json5"
+      - '.github/renovate.json5'
+      - '.github/renovate/**.json5'
 
 env:
   LOG_LEVEL: debug
@@ -37,8 +37,8 @@ jobs:
         uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
         id: generate-token
         with:
-          app_id: "${{ secrets.BOT_APP_ID }}"
-          private_key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
+          app_id: '${{ secrets.TRUXNELL_BOT_APP_ID }}'
+          private_key: '${{ secrets.TRUXNELL_BOT_APP_PRIVATE_KEY }}'
 
       - name: Override default config from dispatch variables
         run: |
@@ -48,5 +48,5 @@ jobs:
       - name: Renovate
         uses: renovatebot/github-action@2e41b1ddc902fddc4c963101990b835f940e6246 # v34.124.5
         with:
-          configurationFile: "${{ env.RENOVATE_CONFIG_FILE }}"
-          token: "${{ steps.generate-token.outputs.token }}"
+          configurationFile: '${{ env.RENOVATE_CONFIG_FILE }}'
+          token: '${{ steps.generate-token.outputs.token }}'
