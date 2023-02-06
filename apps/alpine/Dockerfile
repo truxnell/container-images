@@ -68,6 +68,7 @@ RUN \
     && ln -s /usr/bin/nano /usr/local/bin/emacs \
     && rm -rf /tmp/*
 
+
 VOLUME ["/config"]
 COPY ./apps/alpine/scripts /scripts
 COPY --from=builder /go/bin/envsubst /usr/local/bin/envsubst
