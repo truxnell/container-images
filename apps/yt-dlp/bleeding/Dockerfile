@@ -14,7 +14,7 @@ RUN set -x \
   ffmpeg \
   py3-pip \
   && pip install -U pip setuptools wheel \
-  && pip install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gzp \
+  && pip install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz \
   #&& rm SHA2-256SUMS \ w
   && pip install mutagen \
   # Create directory to hold downloads.
