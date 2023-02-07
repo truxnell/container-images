@@ -31,7 +31,7 @@ ENV CSP=
 COPY --from=build /app/static /usr/share/nginx/html
 
 ENV NGINX_WEB_ROOT "/usr/share/nginx/html"
-RUN  \
+RUN set -x\
     && chown -R nginx:nginx "${NGINX_WEB_ROOT}" \
     && chmod -R 755 "${NGINX_WEB_ROOT}" \
 
@@ -39,5 +39,5 @@ USER nginx
 
 WORKDIR ${NGINX_WEB_ROOT}
 
-LABEL org.opencontainers.image.source="https://github.com/GilbN/theme.park"
+LABEL org.opencontainers.image.source="https://gitlab.com/soapbox-pub/soapbox"
 
