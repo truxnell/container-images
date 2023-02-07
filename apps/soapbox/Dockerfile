@@ -28,12 +28,12 @@ ENV FALLBACK_PORT=4444
 ENV BACKEND_URL=http://localhost:4444
 ENV CSP=
 
-COPY --from=build /app/static /usr/share/nginx/html
+# COPY --from=build /app/static /usr/share/nginx/html
 
 ENV NGINX_WEB_ROOT "/usr/share/nginx/html"
-RUN set -x\
-    && chown -R nginx:nginx "${NGINX_WEB_ROOT}" \
-    && chmod -R 755 "${NGINX_WEB_ROOT}" \
+RUN \
+    chown -R nginx:nginx "${NGINX_WEB_ROOT}" \
+    && chmod -R 755 "${NGINX_WEB_ROOT}" 
 
 USER nginx
 
