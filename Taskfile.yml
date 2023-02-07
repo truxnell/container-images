@@ -18,7 +18,7 @@ tasks:
       - >-
         cue vet --schema '#Spec' ./apps/{{.APP}}/metadata.json metadata.rules.cue
       - >-
-        docker buildx build --progress=plain  --load
+        docker buildx build --no-cache --progress=plain  --load
         -t {{.APP}}:{{.CHANNEL}}
         --build-arg CHANNEL={{.CHANNEL}}
         --build-arg VERSION=$(bash ./.github/scripts/upstream.sh "{{.APP}}" "{{.CHANNEL}}")
