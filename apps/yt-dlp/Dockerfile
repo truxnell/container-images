@@ -7,8 +7,8 @@ ARG CHANNEL
 ARG TARGETARCH
 ENV TARGETARCH=${TARGETARCH:-amd64}
 
-ENV PHANTOM_JS_VERSION ${PHANTOM_JS_VERSION:-2.1.1-linux-x86_64}
-ARG PHANTOM_JS_VERSION
+
+COPY ./apps/yt-dlp/phantomjs-2.1.1-linux-x86_64.tar.bz2 . 
 
 RUN set -x \
   && apk add --no-cache \
@@ -23,8 +23,7 @@ RUN set -x \
   && chmod a+rx /usr/local/bin/yt-dlp \
   # Insall phantomjs
   && mkdir /tmp/phantomjs \
-  && curl -Ls http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-${PHANTOM_JS_VERSION}.tar.bz2 \
-         | tar -xj --strip-components=1 -C /tmp/phantomjs \
+  && tar --strip-components=1 -xf phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /tmp/phantomjs \
   && mv /tmp/phantomjs/bin/phantomjs /usr/local/bin \
   && chmod a+rx /usr/local/bin/phantomjs \
   # Clean-up
@@ -37,7 +36,6 @@ RUN set -x \
   # Sets up cache.
   && mkdir /.cache \
   && chmod 777 /.cache
-    # Install official PhantomJS release
 
 
 # ENV OPENSSL_CONF=/opt/openssl.cnf
