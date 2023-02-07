@@ -31,7 +31,7 @@ ENV CSP=
 COPY --from=build /app/static /usr/share/nginx/html
 
 ENV NGINX_WEB_ROOT "/usr/share/nginx/html"
-RUN set -x \
+RUN  \
     && chown -R nginx:nginx "${NGINX_WEB_ROOT}" \
     && chmod -R 755 "${NGINX_WEB_ROOT}" \
 
