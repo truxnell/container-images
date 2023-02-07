@@ -8,7 +8,7 @@
         "linux/amd64",
         "linux/arm64"
       ],
-      "stable": false,
+      "stable": true,
       "tests": {
         "enabled": true,
         "type": "cli"
