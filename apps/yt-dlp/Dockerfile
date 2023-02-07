@@ -26,6 +26,7 @@ RUN set -x \
   && curl -Ls http://bitbucket.org/ariya/phantomjs/downloads/phantomjs-${PHANTOM_JS_VERSION}.tar.bz2 \
          | tar -xj --strip-components=1 -C /tmp/phantomjs \
   && mv /tmp/phantomjs/bin/phantomjs /usr/local/bin \
+  && chmod a+rx /usr/local/bin/phantomjs \
   # Clean-up
   #&& rm SHA2-256SUMS \ w
   && pip install mutagen \
