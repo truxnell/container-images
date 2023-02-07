@@ -9,9 +9,7 @@ ENV TARGETARCH=${TARGETARCH:-amd64}
 
 RUN set -x \
   && apk add --no-cache \
-  ca-certificates \
   curl \
-  dumb-init \
   ffmpeg \
   py3-pip \
   # Install youtube-dl
@@ -19,8 +17,6 @@ RUN set -x \
   #&& curl -Lo SHA2-256SUMS https://github.com/yt-dlp/yt-dlp/releases/download/${BUILD_VERSION}/SHA2-256SUMS \
   #&& cat SHA2-256SUMS | grep yt-dlp: | awk -F: '{print $2" "$1}' | sha256sum -c \
   && chmod a+rx /usr/local/bin/yt-dlp \
-  # Requires python -> python3.
-  && ln -s /usr/bin/python3 /usr/bin/python \
   # Clean-up
   #&& rm SHA2-256SUMS \ w
   && pip install mutagen \
@@ -38,4 +34,6 @@ VOLUME ["/downloads"]
 
 USER kah
 
-CMD ["yt-dlp"]
+CMD ["/usr/local/bin/yt-dlp"]
+
+LABEL org.opencontainers.image.source="https://github.com/yt-dlp/yt-dlp"
