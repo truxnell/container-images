@@ -1,5 +1,5 @@
 
-FROM node:18-alpine@sha256:f27e3f4c8b5719cb9816084475d687a283c59149f3d11a7aa45b675fea56bed0 as build
+FROM node:19-alpine@sha256:0e9961345f0ef2ea3e132990e814a26cb9fa8f89e50abb68751c6bc45ca014c4 as build
 
 WORKDIR /app
 ARG TARGETPLATFORM
