@@ -1,16 +1,15 @@
 {
-  "app": "yt-dlp",
+  "app": "rebased-soapbox",
   "base": false,
   "channels": [
     {
-      "name": "master",
+      "name": "develop",
       "platforms": [
-        "linux/amd64",
-        "linux/arm64"
+        "linux/amd64"
       ],
       "stable": true,
       "tests": {
-        "enabled": true,
+        "enabled": false,
         "type": "cli"
       }
     }
