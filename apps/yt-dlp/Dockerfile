@@ -30,11 +30,7 @@ RUN set -x \
   && mkdir /.cache \
   && chmod 777 /.cache
 
-
-# ENV OPENSSL_CONF=/opt/openssl.cnf
-
-# RUN set -x \
-#   touch /opt/openssl.cnf 
+COPY ./apps/yt-dlp/wrapper.sh /wrapper.sh
 
 WORKDIR /downloads
 
@@ -42,6 +38,6 @@ VOLUME ["/downloads"]
 
 USER kah
 
-CMD ["/usr/local/bin/yt-dlp"]
+ENTRYPOINT ["/wrapper.sh"]
 
 LABEL org.opencontainers.image.source="https://github.com/yt-dlp/yt-dlp"
