@@ -38,6 +38,6 @@ VOLUME ["/downloads"]
 
 USER kah
 
-ENTRYPOINT ["/wrapper.sh"]
+CMD ["/wrapper.sh"]
 
 LABEL org.opencontainers.image.source="https://github.com/yt-dlp/yt-dlp"
