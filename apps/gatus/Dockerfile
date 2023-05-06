@@ -15,15 +15,15 @@ LABEL org.opencontainers.image.source="https://github.com/TwiN/gatus"
 COPY --from=gatus /gatus /app/gatus
 COPY --from=gatus /config/config.yaml /app/config.default.yaml
 
-ENV GATUS_CONFIG_FILE "/config/config.yaml"
+ENV GATUS_CONFIG_PATH "/config/config.yaml"
 
 #hadolint ignore=DL3018,DL3013
 RUN \
-    mkdir -p /config \
-    && chown -R root:root /app \
-    && chmod -R 755 /app \
-    && chown -R kah:kah /config \
-    && chmod -R 755 /app
+  mkdir -p /config \
+  && chown -R root:root /app \
+  && chmod -R 755 /app \
+  && chown -R kah:kah /config \
+  && chmod -R 755 /app
 
 USER kah
 COPY ./apps/gatus/entrypoint.sh /entrypoint.sh
