@@ -1,7 +1,7 @@
 ARG VERSION
 FROM docker.io/twinproduction/gatus:v$VERSION as gatus
 
-FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:5924c65dfc7db291ae97cb409812ea6b828357daeef6b34ef72eb434cc0438e3
+FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:add46498711df82fe348932ed06f02cd22b1da651d94941fd41fbfb0a403a44f
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
