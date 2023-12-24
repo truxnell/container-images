@@ -1,11 +1,12 @@
 # syntax=docker/dockerfile:1.4
 
-ARG CONF_REGISTRY
-ARG CONF_TAG
-FROM ${CONF_REGISTRY}/base:${CONF_TAG}
 
-ARG CONF_USER=dockusr
+FROM debian:bullseye-20231009
 ARG CONF_APP_ROOT=/app/runalyze
+ARG CONF_USER=dockusr
+ARG CONF_USER_ID=1001
+ARG CONF_GROUP=dockusr
+ARG CONF_GROUP_ID=1001
 
 # Specifies about of this dockerfile/installation
 # - the release artefact is stored in the GIT repository
@@ -13,28 +14,64 @@ ARG CONF_APP_ROOT=/app/runalyze
 # - "restart" queue-processing with a cron-job periodically
 # - the best method to provide the SRTM data is via a docker volume to '$CONF_APP_ROOT/data/srtm'
 
+RUN addgroup --gid $CONF_GROUP_ID $CONF_GROUP && \
+  adduser --uid $CONF_USER_ID --ingroup $CONF_GROUP --disabled-password --gecos "" $CONF_USER
+
+
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends libarchive-tools nginx php7.4-fpm \
+  && apt-get install -y --no-install-recommends runit curl libarchive-tools nginx php7.4-fpm \
   && apt-get install -y --no-install-recommends php7.4-intl php7.4-mysql php7.4-mbstring php7.4-xml php7.4-curl php7.4-zip php7.4-gettext php7.4-bcmath \
   # sqlite for timezones
   php7.4-sqlite3 sqlite3 libsqlite3-mod-spatialite \
   && apt-get install -y --no-install-recommends perl gettext libxml2 python3 python3-pip python3-setuptools inkscape \
   && apt-get install -y --no-install-recommends librsvg2-bin librsvg2-common \
-  && apt-get install -y --no-install-recommends locales && echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen \
+  && apt-get install -y --no-install-recommends locales && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen \
   # install python dependencies for poster generation (all from vendor/runalyze/GpxTrackPoster/requirements.txt); i don't use "-r requirements.txt" because this is not yet available
   && pip3 install --no-cache-dir appdirs==1.4.0 gpxpy==1.0.0 pyparsing==2.0.7 svgwrite==1.1.6 \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+
 # nginx site
-COPY --chmod="700" runit/ /etc/service/
+#COPY --chmod="700" runit/ /etc/service/
 COPY --chmod="644" config/nginx/ /etc/nginx/
-COPY --chmod="640" logrotate.d /etc/logrotate.d
+#COPY --chmod="640" logrotate.d /etc/logrotate.d
+
+# Create Runit service directories and scripts
+RUN mkdir -p /etc/service/nginx /etc/service/php-fpm /etc/service/queue
+
+# Create the 'run' script for Nginx
+RUN echo "#!/bin/sh" > /etc/service/nginx/run \
+  && echo "exec 2>&1" >> /etc/service/nginx/run \
+  && echo "exec /usr/sbin/nginx -g 'daemon off;'" >> /etc/service/nginx/run \
+  && chmod +x /etc/service/nginx/run
+
+# Create the 'run' script for PHP-FPM
+RUN echo "#!/bin/sh" > /etc/service/php-fpm/run \
+  && echo "exec 2>&1" >> /etc/service/php-fpm/run \
+  && echo "exec /usr/sbin/php-fpm --nodaemonize" >> /etc/service/php-fpm/run \
+  && chmod +x /etc/service/php-fpm/run
+
+# Create the 'run' script for the queue processing
+RUN echo "#!/bin/sh" > /etc/service/queue/run \
+  && echo "exec chpst -u dockusr /usr/bin/php /app/runalyze/bin/console runalyze:queue:consume --env=prod --no-debug --stop-when-empty" >> /etc/service/queue/run \
+  && chmod +x /etc/service/queue/run
+
+# Add a cron job for queue processing
+RUN echo "# runalyze batch/queue processing" >> /etc/cron.d/runalyzequeue \
+  && echo "*/4 * * * * root sv start queue > /dev/null" >> /etc/cron.d/runalyzequeue \
+  && chmod 600 /etc/cron.d/runalyzequeue
+
+# Create the 'runit_init.sh' script
+RUN echo '#!/bin/sh' > /usr/local/sbin/runit_init.sh \
+  && echo '/usr/bin/runsvdir -P /etc/service' >> /usr/local/sbin/runit_init.sh \
+  && chmod +x /usr/local/sbin/runit_init.sh
+
 
 # nginx and php configuration
 RUN phpdismod mysqli \
   # activate site and remove default
-  && ln -s /etc/nginx/sites-available/nginxRunalyze /etc/nginx/sites-enabled/nginxRunalyze \
-  && rm -r /etc/nginx/sites-enabled/default \
+  #&& ln -s /etc/nginx/sites-available/nginxRunalyze /etc/nginx/sites-enabled/nginxRunalyze \
+  #&& rm -r /etc/nginx/sites-enabled/default \
   # optimize nginx
   && sed -E -i 's|(^.*)#.*server_tokens.*;$|\1server_tokens off;|' 					/etc/nginx/nginx.conf \
   && sed -E -i 's|(^.*worker_processes\s+)(.*)(\s*;)$|\12\3|' 						/etc/nginx/nginx.conf \
@@ -59,15 +96,30 @@ RUN phpdismod mysqli \
   && sed -E -i 's#^max_file_uploads\s+=.*$#max_file_uploads = 50M#'	 				/etc/php/7.4/fpm/php.ini \
   # change to running user from www-data to dockusr
   && sed -E -i 's#^((user|group|listen\.owner|listen\.group)\s+=).*$#\1'$CONF_USER'#'	/etc/php/7.4/fpm/pool.d/www.conf \
-  && sed -E -i 's|(^.*user\s+)(.*)(\s*;)$|\1'$CONF_USER'\3|' 							/etc/nginx/nginx.conf \
-  # change run user of queue start
-  && sed    -i 's#${RUN_USER}#'$CONF_USER'#' 											/etc/service/queue/run
+  && sed -E -i 's|(^.*user\s+)(.*)(\s*;)$|\1'$CONF_USER'\3|' 							/etc/nginx/nginx.conf 
+# change run user of queue start
+#&& sed    -i 's#${RUN_USER}#'$CONF_USER'#' 											/etc/service/queue/run
 
 # prepare runalyze
-RUN	mkdir /app \
-  && chown -R $CONF_USER:$CONF_USER -R /app \
-  # add queue start as cron (job is started and stopped itself)
-  && echo "# runalyze batch/queue processing\n15 */4 * * * root sv start queue > /dev/null" > /etc/cron.d/runalyzequeue && chmod 600 /etc/cron.d/runalyzequeue
+# Create a directory for the app
+RUN mkdir -p $CONF_APP_ROOT && chown -R $CONF_USER:$CONF_USER $CONF_APP_ROOT
+
+
+
+
+# Copy the entrypoint script into the image
+COPY config/entrypoint.sh /entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /entrypoint.sh
+
+# Create log files and set permissions
+RUN mkdir -p /var/log/runalyze
+RUN touch /var/log/runalyze/project_error.log /var/log/runalyze/project_access.log /var/log/runalyze/php-fpm.log
+RUN chown $CONF_USER:$CONF_USER /var/log/runalyze/project_error.log /var/log/runalyze/project_access.log /var/log/runalyze/php-fpm.log
+RUN chmod 664 /var/log/runalyze/project_error.log /var/log/runalyze/project_access.log /var/log/runalyze/php-fpm.log
+
+RUN ln -sf /dev/stdout /var/log/runalyze/project_error.log && ln -sf /dev/stderr /var/log/runalyze/project_access.log && ln -sf /dev/stdout /var/log/runalyze/php-fpm.log
 
 WORKDIR /app
 
@@ -79,14 +131,13 @@ RUN echo "Downloading & extract..." \
   && curl -L -s https://github.com/codeproducer198/Runalyze/archive/master.zip | bsdtar --strip-components=1 -xf - -C $CONF_APP_ROOT --exclude "./tests"
 
 # copy and protect the configuration file
+USER root
 COPY --chown=$CONF_USER:$CONF_USER --chmod="600" config/config.yml $CONF_APP_ROOT/data/config.yml
 
-COPY --chmod="700" entrypoint.sh .
 
-USER root
 
-# Start to prepare the running container
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Set the entry point to the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]
 
-# Start CMD using runi
+# Start CMD using runit
 CMD ["/usr/local/sbin/runit_init.sh"]
