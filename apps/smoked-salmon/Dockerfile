@@ -11,7 +11,7 @@ ENV TZ="Etc/UTC"
 #   pip install --no-cache-dir -r requirements.txt 
 
 RUN  apt-get update &&\
-  apt-get install -y sox flac mp3val git wget curl python3 python3-pip &&\
+  apt-get install -y sox vi ffmpeg lame flac mp3val git wget curl python3 python3-pip &&\
   adduser kah \
   --uid 568 \
   --group \
