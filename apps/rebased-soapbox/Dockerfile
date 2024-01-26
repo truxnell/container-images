@@ -38,7 +38,8 @@ RUN apt-get update &&\
   curl -L https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.ftz -o /usr/share/fasttext/lid.176.ftz &&\
   chmod 0644 /usr/share/fasttext/lid.176.ftz
 RUN curl -L https://gitlab.com/soapbox-pub/rebased/-/raw/develop/config/docker.exs -o /etc/pleroma/config.exs &&\
-  chmod 640 /etc/pleroma/config.exs
+  chmod 640 /etc/pleroma/config.exs &&\
+  chown pleroma /etc/pleroma/config.exs
 
 RUN curl -L https://gitlab.com/soapbox-pub/rebased/-/raw/develop/docker-entrypoint.sh -o /opt/pleroma/docker-entrypoint.sh &&\
   chmod +x /opt/pleroma/docker-entrypoint.sh
