@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/ubuntu:jammy-20221101@sha256:bf2d52a2e698ab9c2e0a1af7f7b70b9806091c5ca21d9f1a4d1c3809f41e5e93 as build
+FROM ghcr.io/onedr0p/ubuntu:jammy-20240227@sha256:a79a3386914dfdf37d4d03173ab8bba51512305b3863ab178f2520ef27981083 as build
 
 ARG MIX_ENV=prod \
   OAUTH_CONSUMER_STRATEGIES="twitter facebook google microsoft slack github keycloak:ueberauth_keycloak_strategy"
@@ -17,7 +17,7 @@ RUN cd /src &&\
   mkdir release &&\
   mix release --path release
 
-FROM ghcr.io/onedr0p/ubuntu:jammy-20221101@sha256:bf2d52a2e698ab9c2e0a1af7f7b70b9806091c5ca21d9f1a4d1c3809f41e5e93
+FROM ghcr.io/onedr0p/ubuntu:jammy-20240227@sha256:a79a3386914dfdf37d4d03173ab8bba51512305b3863ab178f2520ef27981083
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
